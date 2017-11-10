@@ -1,0 +1,39 @@
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply from: 'idea.gradle'
+apply plugin: 'checkstyle'
+
+// --- properties ---
+ext.ideaInstallationPath = 'C:/Program Files/JetBrains/IntelliJ IDEA 2017.2.4'
+ext.ideaJdk = 'IntelliJ IDEA IU-172.4343.14'
+sourceCompatibility = 1.8
+// --- properties ---
+
+// workaround for http://issues.gradle.org/browse/GRADLE-2538
+sourceSets.main.java.srcDirs = []
+sourceSets.main.groovy.srcDir 'src/main/java'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    compile fileTree(dir: ideaInstallationPath + '/lib', include: '*.jar')
+    testCompile 'org.mockito:mockito-core:2.0.3-beta'
+    testCompile 'org.assertj:assertj-core:1.7.1'
+    testCompile 'org.springframework:spring-test:4.0.0.RELEASE'
+}
+
+jar {
+    metaInf {
+        from('/META-INF') {
+            include 'plugin.xml'
+        }
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.0'
+}
+
